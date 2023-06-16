@@ -23,19 +23,19 @@ const Donor = sequelize.define(
     },
     category: {
       type: DataTypes.ENUM("Individual", "Business"),
-      allowNull: false,
+      allowNull: true,
     },
     name: {
       type: DataTypes.STRING(100),
-      allowNull: false,
+      allowNull: true,
     },
     address: {
       type: DataTypes.STRING(200),
-      allowNull: false,
+      allowNull: true,
     },
     contact_number: {
       type: DataTypes.STRING(20),
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
