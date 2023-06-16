@@ -9,18 +9,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const models = require("./models/relationships");
 /**
  * Starts the server by authenticating the database connection
  */
 
 const startServer = async () => {
-  console.log(process.env.DB_NAME);
   await dbConfig.authenticate();
-  console.log("Database connection established successfully.");
+  console.log(`Connected to Database`);
   await dbConfig.sync();
-  console.log("Database synchronized successfully.");
+
   app.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
+    console.log(
+      `The server is running at http://localhost:${process.env.PORT}`
+    );
   });
 };
 

@@ -8,10 +8,7 @@ const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 const host = process.env.DB_HOST;
 const port = process.env.DB_PORT;
-console.log(host);
-console.log(port);
-console.log(user);
-console.log(password);
+
 /**
  * Create a new instance of sequelize and establish a connection to the database
  */
@@ -20,5 +17,15 @@ const conn = new Sequelize(database, user, password, {
   host: host,
   dialect: "mysql",
 });
+
+conn
+  .authenticate()
+  .then(() => {
+    conn.sync();
+    console.log("Database connection established successfully.");
+  })
+  .catch((error) => {
+    console.error("Unable to connect to the database:", error);
+  });
 
 module.exports = conn;
