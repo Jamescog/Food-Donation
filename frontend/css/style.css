@@ -113,11 +113,12 @@ nav {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    width: auto;
+    width: 550px;
     height: 420px;
     position: relative;
     top: -60px
 }
+
 
 .hero-container a {
     text-decoration: none;
@@ -132,7 +133,7 @@ nav {
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
-    width: 190px;
+    width: 500px;
     height: 500px;
 }
 
@@ -146,7 +147,6 @@ nav {
     transition: 1s;
     border-bottom: 3px solid var(--border);
 }
-
 
 /*  */
 .body-bg {
@@ -183,7 +183,16 @@ nav {
 
 .advert-img {
     border-radius: 50%;
+    width: 450px;
+    height: 450px;
     /* filter: grayscale(100%); */
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width : 480px) {
+    .advert-img {
+        width: 320px;
+        height: 320px;
+    }
 }
 
 .goal-img {
