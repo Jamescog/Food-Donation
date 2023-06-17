@@ -36,10 +36,7 @@ exports.loginDonorAccount = async (req, res) => {
     return res.status(400).json({ error: "Invalid password" });
   }
 
-  const token = jwt.sign(
-    { donor_id: account.donor_id },
-    process.env.JWT_SECRET
-  );
+  const token = jwt.sign({ email: email }, process.env.JWT_SECRET);
 
   return res.status(200).json({ token: token });
 };

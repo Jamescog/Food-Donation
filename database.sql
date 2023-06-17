@@ -7,7 +7,7 @@ CREATE TABLE Donors (
   category ENUM('Individual', 'Business') NOT NULL,
   name VARCHAR(100) NOT NULL,
   address VARCHAR(200) NOT NULL,
-  contact_number VARCHAR(20) NOT NULL
+  contact_number VARCHAR(20)
 );
 
 -- Create the Collectors table
