@@ -81,6 +81,12 @@ exports.cancelDonationRequest = async (req, res) => {
     return res.status(400).json({ error: "Donation request does not exist" });
   }
 
+  if (donationRequest.state !== "New") {
+    return res.status(400).json({
+      error: "Donation request cannot be cancelled at this state",
+    });
+  }
+
   const deleteDonationRequest = await donationRequest.destroy();
 
   return res.status(200).json({
@@ -93,12 +99,39 @@ exports.getDonationRequests = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 9;
   const offset = (page - 1) * limit;
+  const state = req.query.state;
 
-  const totalDonationRequests = await DonationRequest.count({});
+  let whereCondition = {};
+  if (state) {
+    whereCondition.state = state;
+  }
 
+  const donationRequests = await DonationRequest.findAndCountAll({
+    where: whereCondition,
+    limit,
+    offset,
+  });
+
+  return res.status(200).json({
+    donationRequests: donationRequests.rows,
+    totalDonationRequests: donationRequests.count,
+    currentPage: page,
+  });
+};
+
+exports.getDonationRequestsByDonor = async (req, res) => {
+  const { donor_id } = req.user;
+  const page = parseInt(req.query.page) || 1;
+  const limit = 9;
+  const offset = (page - 1) * limit;
+
+  const totalDonationRequests = await DonationRequest.count({
+    where: { donor_id: donor_id },
+  });
   const totalPages = Math.ceil(totalDonationRequests / limit);
 
   const donationRequests = await DonationRequest.findAll({
+    where: { donor_id: donor_id },
     offset,
     limit,
   });
@@ -110,5 +143,89 @@ exports.getDonationRequests = async (req, res) => {
     totalDonationRequests,
     totalPages,
     hasNextPage,
+  });
+};
+
+exports.assignCollector = async (req, res) => {
+  const { request_id } = req.params;
+  const { collector_id } = req.body;
+
+  const donationRequest = await DonationRequest.findOne({
+    where: { request_id: request_id },
+  });
+
+  if (!donationRequest) {
+    return res.status(400).json({ error: "Donation request does not exist" });
+  }
+
+  const collector = await Collector.findOne({
+    where: { collector_id: collector_id },
+  });
+
+  if (!collector) {
+    return res.status(400).json({ error: "Collector account does not exist" });
+  }
+
+  const updatedDonationRequest = await donationRequest.update({
+    collector_id: collector_id,
+    state: "Pending",
+  });
+
+  return res.status(200).json({
+    message: "Collector assigned successfully",
+    donationRequest: updatedDonationRequest,
+  });
+};
+
+exports.assignDistributor = async (req, res) => {
+  const { request_id } = req.params;
+  const { distributor_id } = req.body;
+
+  const donationRequest = await DonationRequest.findOne({
+    where: { request_id: request_id },
+  });
+
+  if (!donationRequest) {
+    return res.status(400).json({ error: "Donation request does not exist" });
+  }
+
+  const distributor = await Distributor.findOne({
+    where: { distributor_id: distributor_id },
+  });
+
+  if (!distributor) {
+    return res
+      .status(400)
+      .json({ error: "Distributor account does not exist" });
+  }
+
+  const updatedDonationRequest = await donationRequest.update({
+    distributor_id: distributor_id,
+  });
+
+  return res.status(200).json({
+    message: "Distributor assigned successfully",
+    donationRequest: updatedDonationRequest,
+  });
+};
+
+exports.markAsDone = async (req, res) => {
+  const { request_id } = req.params;
+
+  const donationRequest = await DonationRequest.findOne({
+    where: { request_id: request_id },
+  });
+
+  if (!donationRequest) {
+    return res.status(400).json({ error: "Donation request does not exist" });
+  }
+
+  const updatedDonationRequest = await donationRequest.update({
+    state: "Done",
+  });
+
+  return res.status(200).json({
+    message: "Donation request marked as done successfully",
+    donationRequest: updatedDonationRequest,
   });
 };
