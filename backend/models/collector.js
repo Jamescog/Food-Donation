@@ -41,6 +41,10 @@ const Collector = sequelize.define(
       type: DataTypes.STRING(50),
       allowNull: false,
     },
+    kebele: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+    },
   },
   {
     tableName: "Collectors",

@@ -37,6 +37,11 @@ const Donor = sequelize.define(
       type: DataTypes.STRING(20),
       allowNull: true,
     },
+    status: {
+      type: DataTypes.ENUM("Active", "Blocked"),
+      allowNull: false,
+      defaultValue: "Active",
+    },
   },
   {
     tableName: "Donors",

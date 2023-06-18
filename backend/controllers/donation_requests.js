@@ -4,7 +4,8 @@ const Collector = require("../models/collector");
 const Distributor = require("../models/distributor");
 const {
   send_successful_donation_notification,
-} = require("../utils/send_succcessful_donation_email");
+  alertDistributor,
+} = require("../utils/notification_emails");
 
 exports.createDonationRequest = async (req, res) => {
   const { location, prepared_datetime, pickup_time } = req.body;
@@ -189,6 +190,10 @@ exports.assignDistributor = async (req, res) => {
     return res.status(400).json({ error: "Donation request does not exist" });
   }
 
+  const donor = await Donor.findOne({
+    where: { donor_id: donationRequest.donor_id },
+  });
+
   const distributor = await Distributor.findOne({
     where: { distributor_id: distributor_id },
   });
@@ -198,6 +203,14 @@ exports.assignDistributor = async (req, res) => {
       .status(400)
       .json({ error: "Distributor account does not exist" });
   }
+
+  await alertDistributor(
+    distributor.email,
+    donationRequest.request_id,
+    donationRequest.location,
+    donationRequest.pickup_time,
+    donor.contact_number
+  );
 
   const updatedDonationRequest = await donationRequest.update({
     distributor_id: distributor_id,
