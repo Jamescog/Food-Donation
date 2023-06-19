@@ -62,6 +62,10 @@ a {
     cursor: pointer;
 }
 
+.hidden {
+    display: none;
+}
+
 /* #################### Form style */
 .form-container {
     display: flex;
