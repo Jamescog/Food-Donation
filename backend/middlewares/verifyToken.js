@@ -2,31 +2,33 @@ const Donor = require("../models/donor");
 const Admin = require("../models/admin");
 const jwt = require("jsonwebtoken");
 
-/**
- * This middleware is used to verify the token sent by the client.
- * If the token is valid, the user is allowed to access the protected route.
- * @param{Object} req - Request object
- * @param{Object} res - Response object
- * @param{Function} next - Next function
- * @returns {void}
- * Author: Yaekob Demisse
- */
-
 exports.verifyToken = async (req, res, next) => {
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (decoded.email) {
-      const donor = await Donor.findOne({ where: { email: decoded.email } });
-      if (donor) {
-        req.user = donor;
-        return next();
+  try {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      const token = req.headers.authorization.split(" ")[1];
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded.email) {
+          const donor = await Donor.findOne({
+            where: { email: decoded.email },
+          });
+          if (donor) {
+            req.user = donor;
+            return next();
+          }
+        }
+      } catch (error) {
+        if (error.name === "TokenExpiredError") {
+          return res.status(401).json({ error: "Token expired" });
+        }
+        throw error;
       }
     }
-  } else {
-    return res.status(401).json({ error: "Authorization header not found" });
+    return res.status(401).json({ error: "Unauthorized" });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
   }
 };

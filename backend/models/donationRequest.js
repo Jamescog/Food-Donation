@@ -19,6 +19,10 @@ const DonationRequest = sequelize.define(
     distributor_id: {
       type: DataTypes.INTEGER,
     },
+    contact_number: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+    },
     location: {
       type: DataTypes.STRING(200),
       allowNull: false,

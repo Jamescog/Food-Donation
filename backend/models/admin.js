@@ -21,6 +21,15 @@ const Admin = sequelize.define(
       type: DataTypes.STRING(100),
       allowNull: false,
     },
+    country: {
+      type: DataTypes.STRING(50),
+    },
+    city: {
+      type: DataTypes.STRING(50),
+    },
+    phone_number: {
+      type: DataTypes.STRING(50),
+    },
   },
   {
     tableName: "Admins",
