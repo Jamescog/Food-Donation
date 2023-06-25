@@ -14,15 +14,12 @@ const Admin = sequelize.define(
       allowNull: false,
     },
     password: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     email: {
       type: DataTypes.STRING(100),
       allowNull: false,
-    },
-    country: {
-      type: DataTypes.STRING(50),
     },
     city: {
       type: DataTypes.STRING(50),

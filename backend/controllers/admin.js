@@ -1,6 +1,37 @@
 const Donor = require("../models/donor");
 const Collector = require("../models/collector");
 const Distributor = require("../models/distributor");
+const Admin = require("../models/admin");
+const DonationRequest = require("../models/donationRequest");
+
+exports.createAdminAccount = async (req, res) => {
+  const { username, password, email } = req.body;
+
+  try {
+    const admin = await Admin.create({
+      username,
+      password,
+      email,
+    });
+    res.status(201).json({ admin });
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to create admin account",
+      message: error.message,
+    });
+  }
+};
+
+exports.thisAccount = async (req, res) => {
+  try {
+    const { password, ...userWithoutPassword } = req.user;
+    res.status(200).json({ user: userWithoutPassword });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: `Internal Server Error: ${error.message}` });
+  }
+};
 
 exports.updateAdminAccount = async (req, res) => {
   const { admin_id } = req.params;
@@ -15,6 +46,26 @@ exports.updateAdminAccount = async (req, res) => {
     res.status(200).json({ admin });
   } catch (error) {
     res.status(500).json({ error: "Failed to update admin account" });
+  }
+};
+
+exports.statGenerator = async (req, res) => {
+  try {
+    const donors = await Donor.findAll();
+    const collectors = await Collector.findAll();
+    const distributors = await Distributor.findAll();
+    const requests = await DonationRequest.findAll();
+
+    const stats = {
+      donors: donors.length,
+      collectors: collectors.length,
+      distributors: distributors.length,
+      requests: requests.length,
+    };
+
+    res.status(200).json({ stats });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to generate stats" });
   }
 };
 
@@ -43,9 +94,13 @@ exports.createCollectorAccount = async (req, res) => {
       woreda,
       kebele,
     });
-    res.status(201).json({ collector });
+    res.status(200).json({ collector });
   } catch (error) {
-    res.status(500).json({ error: "Failed to create collector account" });
+    console.log(error);
+    res.status(500).json({
+      error: `Failed to create collector account ${error.message}`,
+      message: error.message,
+    });
   }
 };
 
@@ -74,7 +129,7 @@ exports.createDistributorAccount = async (req, res) => {
       woreda,
       kebele,
     });
-    res.status(201).json({ distributor });
+    res.status(200).json({ distributor });
   } catch (error) {
     res.status(500).json({ error: "Failed to create distributor account" });
   }

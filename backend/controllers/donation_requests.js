@@ -9,7 +9,8 @@ const {
 
 exports.createDonationRequest = async (req, res) => {
   try {
-    const { location, prepared_datetime, pickup_time } = req.body;
+    const { location, prepared_datetime, pickup_time, contact_number } =
+      req.body;
     const { donor_id } = req.user;
 
     const donor = await Donor.findOne({ where: { donor_id: donor_id } });
@@ -18,19 +19,27 @@ exports.createDonationRequest = async (req, res) => {
       return res.status(400).json({ error: "Donor account does not exist" });
     }
 
+    const currentDate = new Date();
+    const [hours, minutes] = prepared_datetime.split(":");
+    currentDate.setUTCHours(hours);
+    currentDate.setUTCMinutes(minutes);
+    currentDate.setUTCSeconds(0);
+    currentDate.setUTCMilliseconds(0);
+
     const donationRequest = await DonationRequest.create({
       donor_id: donor_id,
       location: location,
-      prepared_datetime: prepared_datetime,
+      prepared_datetime: currentDate,
       pickup_time: pickup_time,
+      contact_number: contact_number,
       state: "New",
     });
 
-    await send_successful_donation_notification(
-      donor.username,
-      location,
-      pickup_time
-    );
+    // await send_successful_donation_notification(
+    //   donor.username,
+    //   location,
+    //   pickup_time
+    // );
 
     return res.status(201).json({
       message: "Donation request created successfully",
@@ -63,6 +72,7 @@ exports.getDonationRequest = async (req, res) => {
 
 exports.updateDonationRequest = async (req, res) => {
   try {
+    console.log(req.body);
     const { request_id } = req.params;
     const { updates } = req.body;
 
@@ -74,7 +84,7 @@ exports.updateDonationRequest = async (req, res) => {
       return res.status(400).json({ error: "Donation request does not exist" });
     }
 
-    const updatedDonationRequest = await donationRequest.update(updates);
+    const updatedDonationRequest = await donationRequest.update(req.body);
 
     return res.status(200).json({
       message: "Donation request updated successfully",
@@ -133,11 +143,14 @@ exports.getDonationRequests = async (req, res) => {
       limit,
       offset,
     });
+    const totalPages = Math.ceil(donationRequests.count / limit);
+    const hasNextPage = page < totalPages;
 
     return res.status(200).json({
       donationRequests: donationRequests.rows,
       totalDonationRequests: donationRequests.count,
       currentPage: page,
+      hasNextPage: hasNextPage,
     });
   } catch (error) {
     console.error(error);
@@ -147,9 +160,9 @@ exports.getDonationRequests = async (req, res) => {
 
 exports.getDonationRequestsByDonor = async (req, res) => {
   try {
-    const { donor_id } = req.user;
+    const donor_id = req.user.donor_id;
     const page = parseInt(req.query.page) || 1;
-    const limit = 9;
+    const limit = 4;
     const offset = (page - 1) * limit;
 
     const totalDonationRequests = await DonationRequest.count({
@@ -181,8 +194,7 @@ exports.getDonationRequestsByDonor = async (req, res) => {
 
 exports.assignCollector = async (req, res) => {
   try {
-    const { request_id } = req.params;
-    const { collector_id } = req.body;
+    const { request_id, collector_id } = req.query;
 
     const donationRequest = await DonationRequest.findOne({
       where: { request_id: request_id },
@@ -219,8 +231,7 @@ exports.assignCollector = async (req, res) => {
 
 exports.assignDistributor = async (req, res) => {
   try {
-    const { request_id } = req.params;
-    const { distributor_id } = req.body;
+    const { request_id, distributor_id } = req.query;
 
     const donationRequest = await DonationRequest.findOne({
       where: { request_id: request_id },
@@ -244,13 +255,13 @@ exports.assignDistributor = async (req, res) => {
         .json({ error: "Distributor account does not exist" });
     }
 
-    await alertDistributor(
-      distributor.email,
-      donationRequest.request_id,
-      donationRequest.location,
-      donationRequest.pickup_time,
-      donor.contact_number
-    );
+    // await alertDistributor(
+    //   distributor.email,
+    //   donationRequest.request_id,
+    //   donationRequest.location,
+    //   donationRequest.pickup_time,
+    //   donor.contact_number
+    // );
 
     const updatedDonationRequest = await donationRequest.update({
       distributor_id: distributor_id,
@@ -268,7 +279,7 @@ exports.assignDistributor = async (req, res) => {
 
 exports.markAsDone = async (req, res) => {
   try {
-    const { request_id } = req.params;
+    const { request_id } = req.query;
 
     const donationRequest = await DonationRequest.findOne({
       where: { request_id: request_id },

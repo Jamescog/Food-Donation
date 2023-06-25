@@ -11,39 +11,30 @@ const Collector = sequelize.define(
     },
     username: {
       type: DataTypes.STRING(50),
-      allowNull: false,
     },
     password: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
+      type: DataTypes.STRING(255),
     },
     email: {
       type: DataTypes.STRING(100),
-      allowNull: false,
     },
     full_name: {
       type: DataTypes.STRING(100),
-      allowNull: false,
     },
     contact_number: {
       type: DataTypes.STRING(20),
-      allowNull: false,
     },
     state: {
       type: DataTypes.STRING(50),
-      allowNull: false,
     },
     city: {
       type: DataTypes.STRING(50),
-      allowNull: false,
     },
     woreda: {
       type: DataTypes.STRING(50),
-      allowNull: false,
     },
     kebele: {
       type: DataTypes.STRING(50),
-      allowNull: false,
     },
   },
   {

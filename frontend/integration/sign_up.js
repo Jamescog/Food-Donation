@@ -18,7 +18,10 @@ $(document).ready(() => {
       dataType: "json",
       data: JSON.stringify(data),
       contentType: "application/json",
-      success: (response) => {},
+      success: (response) => {
+        console.log(response);
+        window.location.href = "http://localhost:4550/login.html";
+      },
       error: (xhr, status, error) => {
         console.log(xhr.responseJSON);
       },

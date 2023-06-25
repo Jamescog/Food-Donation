@@ -20,16 +20,16 @@
         <!-- Large device Sidebar -->
         <div class="col-lg-2 col-md-2 col-12  px-4 sidebar fw-semibold d-none d-lg-block">
             <p class="fs-1 my-5">
-                <a href="/admin/index.html" class="text-light">
+                <a href="/admin/admin.html" class="text-light">
                     <img src="/img/logo.png" alt="logo" class="img-fluid">
                 </a>
             </p>
 
-            <p class="bi bi-person-fill ms-2 small"> Jon Doe</p>
+            <p class="bi bi-person-fill ms-2 small" id="account-name"> Jon Doe</p>
 
             <div class="pt-2">
                 <p class="mb-4">
-                    <a href="/admin/index.html" class="text-light">
+                    <a href="/admin/admin.html" class="text-light">
                         <span class="text-warning fs-5 bi bi-speedometer2 me-1"></span>
                         Dashboard</a>
                 </p>
@@ -94,16 +94,16 @@
         <!-- Medium device sidebar -->
         <div class="col-1 d-none d-md-block d-lg-none sidebar" style="width: 100px;">
             <p class="my-5">
-                <a href="/admin/index.html" class="text-light">
+                <a href="/admin/admin.html" class="text-light">
                     <img src="/img/logo.png" alt="logo" class="img-fluid">
                 </a>
             </p>
 
-            <p class="bi bi-person-fill small"> Jon Doe</p>
+            <p class="bi bi-person-fill small" id="account-name"> Jon Doe</p>
 
             <div class="ms-2 pt-2">
                 <p class="mb-4">
-                    <a href="/admin/index.html" class="text-light" title="Dashboard"> <span
+                    <a href="/admin/admin.html" class="text-light" title="Dashboard"> <span
                             class="text-warning fs-5 bi bi-speedometer2 me-1"></span>
                     </a>
                 </p>
@@ -183,15 +183,15 @@
                 <button id="sidebar-close" class="close-btn float-end">&times;</button>
 
                 <p class="mb-5 p-2">
-                    <a href="/admin/index.html" class="text-light">
+                    <a href="/admin/admin.html" class="text-light">
                         <img src="/img/logo.png" alt="" width="180px">
                     </a>
                 </p>
 
-                <p class="ms-2 bi bi-person-fill small">Jon Doe</p>
+                <p class="ms-2 bi bi-person-fill small" id="account-name">Jon Doe</p>
 
                 <p class="my-4">
-                    <a href="/admin/index.html" class="text-light"> <span
+                    <a href="/admin/admin.html" class="text-light"> <span
                             class="text-warning fs-5 bi bi-speedometer2 me-1"></span>
                         Dashboard</a>
                 </p>
@@ -262,35 +262,35 @@
                 <p class="fs-5 fw-semibold border-start border-warning border-5 mb-4"> &nbsp; &nbsp; Dashboard</p>
 
                 <!-- Navbar -->
-                <div class="navbar border-bottom d-none d-md-block shadow-lg rounded">
+                <!-- <div class="navbar border-bottom d-none d-md-block shadow-lg rounded">
                     <a href="/admin/profile.html">
-                        <span class="small bi bi-person-fill">&nbsp; &nbsp; Jon Doe</span>
+                        <span class="small bi bi-person-fill account-name" id="account-name">Jon Doe</span>
                     </a>
-                </div>
+                </div> -->
 
                 <div class="row mt-5">
                     <div class="col-lg-6 col-md-6 col-12">
                         <div class="shadow p-5 bg rounded text-center fw-semibold">
-                            <p class="display-5 fw-semibold">42</p>
-                            <p class="fs-4">Total Donation</p>
+                            <p class="display-5 fw-semibold" id="donation-num">42</p>
+                            <p class="fs-4" >Total Donations</p>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-12">
                         <div class="shadow p-5 bg rounded text-center fw-semibold">
-                            <p class="display-5 fw-semibold">29</p>
-                            <p class="fs-4">Total Donators</p>
+                            <p class="display-5 fw-semibold" id="don-num">29</p>
+                            <p class="fs-4" >Total Donors</p>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-12 mt-4">
                         <div class="shadow p-5 bg rounded text-center fw-semibold">
-                            <p class="display-5 fw-semibold">10</p>
-                            <p class="fs-4">Collectors</p>
+                            <p class="display-5 fw-semibold " id="coll-num">10</p>
+                            <p class="fs-4" >Collectors</p>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-12 mt-4">
                         <div class="shadow p-5 bg rounded text-center fw-semibold">
-                            <p class="display-5 fw-semibold">10</p>
-                            <p class="fs-4">Distributors</p>
+                            <p class="display-5 fw-semibold" id="distr-num">10</p>
+                            <p class="fs-4" >Distributors</p>
                         </div>
                     </div>
                 </div>
@@ -299,6 +299,8 @@
         </div>
 
         <script src="../js/admin.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="./integration/dashboard.js"></script>
 
 </body>
 

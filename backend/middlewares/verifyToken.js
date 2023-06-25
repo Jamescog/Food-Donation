@@ -12,11 +12,15 @@ exports.verifyToken = async (req, res, next) => {
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (decoded.email) {
-          const donor = await Donor.findOne({
-            where: { email: decoded.email },
-          });
-          if (donor) {
-            req.user = donor;
+          let user;
+          if (decoded.email.startsWith("admin")) {
+            user = await Admin.findOne({ where: { email: decoded.email } });
+          } else {
+            user = await Donor.findOne({ where: { email: decoded.email } });
+          }
+
+          if (user) {
+            req.user = user;
             return next();
           }
         }
