@@ -9,8 +9,9 @@ $(document).ready(() => {
     const full_name = $("#fullName").val();
     const state = $("#state").val();
     const contact_number = $("#phone").val();
-    const wereda = $("#wereda").val();
+    const woreda = $("#wereda").val();
     const kebele = $("#kebele").val();
+    const city = $("#city").val();
 
     const collectorData = {
       username,
@@ -19,7 +20,8 @@ $(document).ready(() => {
       full_name,
       state,
       contact_number,
-      wereda,
+      city,
+      woreda,
       kebele,
     };
 
@@ -53,8 +55,9 @@ $(document).ready(() => {
     const full_name = $("#fullName").val();
     const state = $("#state").val();
     const contact_number = $("#phone").val();
-    const wereda = $("#wereda").val();
+    const woreda = $("#wereda").val();
     const kebele = $("#kebele").val();
+    const city = $("#city").val();
 
     const distributorData = {
       username,
@@ -63,7 +66,8 @@ $(document).ready(() => {
       full_name,
       state,
       contact_number,
-      wereda,
+      city,
+      woreda,
       kebele,
     };
 

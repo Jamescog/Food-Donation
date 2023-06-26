@@ -5,14 +5,14 @@ $(document).ready(() => {
     const updatedData = {
       username: $("#username").val() || "",
       email: $("#email").val() || "",
-      address: `${$("#country").val() || ""}, ${$("#city").val() || ""}`,
-      contact_number: $("#phone").val() || "",
+      city: `${$("#country").val() || ""}, ${$("#city").val() || ""}`,
+      phone_number: $("#phone").val() || "",
     };
 
     // Send AJAX PUT request to update the donor's account
     $.ajax({
       url: "http://localhost:4550/api/admin/updateAdmin",
-      method: "PUT",
+      method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -44,15 +44,14 @@ $(document).ready(() => {
       $("#username").val(donor.username ? donor.username : "N/A");
       $("#email").val(donor.email ? donor.email : "N/A");
 
-      // Separate address value into country and city
-      const addressArray = donor.address
-        ? donor.address.split(",")
+      const [country, city] = donor.city
+        ? donor.city.split(", ")
         : ["N/A", "N/A"];
-      const [country, city] = addressArray.map((item) => item.trim());
+
       $("#country").val(country);
       $("#city").val(city);
 
-      $("#phone").val(donor.contact_number ? donor.contact_number : "N/A");
+      $("#phone").val(donor.phone_number ? donor.phone_number : "N/A");
 
       // Fill side info card
       $("#sub-username").text(donor.username ? donor.username : "N/A");
@@ -60,7 +59,7 @@ $(document).ready(() => {
       $(".bi-flag-fill").text(country);
       $(".bi-building").text(city);
       $(".bi-telephone-fill").text(
-        donor.contact_number ? donor.contact_number : "N/A"
+        donor.phone_number ? donor.phone_number : "N/A"
       );
     },
   });

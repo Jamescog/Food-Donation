@@ -18,17 +18,20 @@ $(document).ready(() => {
   let donors = [];
   let collectors = [];
   let distributors = [];
+  let currentPage = 1;
 
-  const fetchDonorData = () => {
+  const fetchDonorData = (page) => {
     $.ajax({
-      url: "http://localhost:4550/api/admin/donationRequests",
+      url: `http://localhost:4550/api/admin/donationRequests?page=${page}`,
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
       success: (response) => {
         donors = response.donationRequests;
+        currentPage = response.currentPage;
         populateDonorTable();
+        updatePagination(response.totalDonationRequests);
       },
       error: (error) => {
         console.error("Error fetching donor data:", error);
@@ -162,38 +165,29 @@ $(document).ready(() => {
     });
   };
 
-  const makeCollectorApiCall = (requestId, collectorId) => {
-    $.ajax({
-      url: `http://localhost:4550/api/admin/assignCollector?request_id=${requestId}&collector_id=${collectorId}`,
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      success: (response) => {
-        console.log("Collector assigned successfully");
-        location.reload();
-      },
-      error: (error) => {
-        console.error("Error assigning collector:", error);
-      },
-    });
-  };
+  const updatePagination = (totalDonationRequests) => {
+    const totalPages = Math.ceil(totalDonationRequests / 9);
+    const paginationElement = $(".pagination");
+    paginationElement.empty();
 
-  const makeDistributorApiCall = (requestId, distributorId) => {
-    $.ajax({
-      url: `http://localhost:4550/api/admin/assignDistributor?request_id=${requestId}&distributor_id=${distributorId}`,
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      success: (response) => {
-        console.log("Distributor assigned successfully");
-        location.reload();
-      },
-      error: (error) => {
-        console.error("Error assigning distributor:", error);
-      },
-    });
+    const previousLink =
+      currentPage > 1
+        ? `<a class="page-link" href="#">Previous</a>`
+        : `<span class="page-link">Previous</span>`;
+    paginationElement.append(`<li class="page-item">${previousLink}</li>`);
+
+    for (let i = 1; i <= totalPages; i++) {
+      const activeClass = currentPage === i ? "active" : "";
+      paginationElement.append(
+        `<li class="page-item"><a class="page-link ${activeClass}" href="#">${i}</a></li>`
+      );
+    }
+
+    const nextLink =
+      currentPage < totalPages
+        ? `<a class="page-link" href="#">Next</a>`
+        : `<span class="page-link">Next</span>`;
+    paginationElement.append(`<li class="page-item">${nextLink}</li>`);
   };
 
   const makeDoneApiCall = (requestId) => {
@@ -219,9 +213,24 @@ $(document).ready(() => {
     fetchDonorData(pageNumber);
   };
 
-  $(".pagination-link").on("click", handlePaginationClick);
+  $(document).on("click", ".pagination .page-link", handlePaginationClick);
 
-  fetchDonorData();
+  $.ajax({
+    url: "http://localhost:4550/api/admin/thisaccount",
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    success: (response) => {
+      const admin = response.user.dataValues;
+      $("#account-name").text(`  ${admin.username.toUpperCase()}`);
+    },
+    error: (err) => {
+      console.log(err);
+    },
+  });
+
+  fetchDonorData(currentPage);
   fetchCollectors();
   fetchDistributors();
 });

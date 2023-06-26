@@ -60,17 +60,13 @@ exports.thisAccount = async (req, res) => {
 
 exports.updateAdminAccount = async (req, res) => {
   const { admin_id } = req.user;
-  const { contact_number } = req.body;
 
   try {
-    const admin = await Admin.update(
-      { contact_number },
-      {
-        where: {
-          admin_id,
-        },
-      }
-    );
+    const admin = await Admin.update(req.body, {
+      where: {
+        admin_id,
+      },
+    });
     res.status(200).json({ admin });
   } catch (error) {
     res.status(500).json({ error: "Failed to update admin account" });
