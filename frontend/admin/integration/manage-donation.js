@@ -18,20 +18,17 @@ $(document).ready(() => {
   let donors = [];
   let collectors = [];
   let distributors = [];
-  let currentPage = 1;
 
-  const fetchDonorData = (page) => {
+  const fetchDonorData = () => {
     $.ajax({
-      url: `http://localhost:4550/api/admin/donationRequests?page=${page}`,
+      url: "http://localhost:4550/api/admin/donationRequests",
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
       success: (response) => {
         donors = response.donationRequests;
-        currentPage = response.currentPage;
         populateDonorTable();
-        updatePagination(response.totalDonationRequests);
       },
       error: (error) => {
         console.error("Error fetching donor data:", error);
@@ -132,12 +129,13 @@ $(document).ready(() => {
         donor.state === "Pending"
           ? `<button class="btn btn-primary" id="done-${index}">Mark it as Done</button>`
           : `<button class="btn btn-primary" disabled>Not Needed</button>`;
-
+      const [date, time] = donor.prepared_datetime.split("T");
+      const formattedTime = time.split(":").slice(0, 2).join(":");
       const row = `
           <tr>
               <th scope="row">${index + 1}</th>
               <td>${donor.request_id}</td>
-              <td>${donor.prepared_datetime.substring(11, 16)}</td>
+              <td>${formattedTime}</td>
               <td>${donor.pickup_time}</td>
               <td>${donor.contact_number}</td>
               ${collectorColumn}
@@ -165,29 +163,38 @@ $(document).ready(() => {
     });
   };
 
-  const updatePagination = (totalDonationRequests) => {
-    const totalPages = Math.ceil(totalDonationRequests / 9);
-    const paginationElement = $(".pagination");
-    paginationElement.empty();
+  const makeCollectorApiCall = (requestId, collectorId) => {
+    $.ajax({
+      url: `http://localhost:4550/api/admin/assignCollector?request_id=${requestId}&collector_id=${collectorId}`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      success: (response) => {
+        console.log("Collector assigned successfully");
+        location.reload();
+      },
+      error: (error) => {
+        console.error("Error assigning collector:", error);
+      },
+    });
+  };
 
-    const previousLink =
-      currentPage > 1
-        ? `<a class="page-link" href="#">Previous</a>`
-        : `<span class="page-link">Previous</span>`;
-    paginationElement.append(`<li class="page-item">${previousLink}</li>`);
-
-    for (let i = 1; i <= totalPages; i++) {
-      const activeClass = currentPage === i ? "active" : "";
-      paginationElement.append(
-        `<li class="page-item"><a class="page-link ${activeClass}" href="#">${i}</a></li>`
-      );
-    }
-
-    const nextLink =
-      currentPage < totalPages
-        ? `<a class="page-link" href="#">Next</a>`
-        : `<span class="page-link">Next</span>`;
-    paginationElement.append(`<li class="page-item">${nextLink}</li>`);
+  const makeDistributorApiCall = (requestId, distributorId) => {
+    $.ajax({
+      url: `http://localhost:4550/api/admin/assignDistributor?request_id=${requestId}&distributor_id=${distributorId}`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      success: (response) => {
+        console.log("Distributor assigned successfully");
+        location.reload();
+      },
+      error: (error) => {
+        console.error("Error assigning distributor:", error);
+      },
+    });
   };
 
   const makeDoneApiCall = (requestId) => {
@@ -213,24 +220,9 @@ $(document).ready(() => {
     fetchDonorData(pageNumber);
   };
 
-  $(document).on("click", ".pagination .page-link", handlePaginationClick);
+  $(".pagination-link").on("click", handlePaginationClick);
 
-  $.ajax({
-    url: "http://localhost:4550/api/admin/thisaccount",
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    success: (response) => {
-      const admin = response.user.dataValues;
-      $("#account-name").text(`  ${admin.username.toUpperCase()}`);
-    },
-    error: (err) => {
-      console.log(err);
-    },
-  });
-
-  fetchDonorData(currentPage);
+  fetchDonorData();
   fetchCollectors();
   fetchDistributors();
 });

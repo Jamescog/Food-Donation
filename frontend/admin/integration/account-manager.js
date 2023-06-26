@@ -1,4 +1,22 @@
 $(document).ready(() => {
+  // make an api call to the backend to get the account details
+  $.ajax({
+    url: "http://localhost:4550/api/admin/thisaccount",
+    method: "GET",
+    // use auth of Bearer token from local storage of token
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    success: (response) => {
+      const admin = response.user.dataValues;
+      // change the value of p with id account-name to the admin's name(admin.username)
+      $("#account-name").text(`  ${admin.username.toUpperCase()}`);
+    },
+    error: (err) => {
+      console.log(err);
+    },
+  });
+
   // Create Collector
   $("#createCollector").click((event) => {
     event.preventDefault(); // Prevent default form submission behavior
