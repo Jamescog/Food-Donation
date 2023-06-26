@@ -147,6 +147,8 @@ exports.getDonationRequests = async (req, res) => {
       limit,
       offset,
     });
+
+    donationRequests.rows.reverse();
     const totalPages = Math.ceil(donationRequests.count / limit);
     const hasNextPage = page < totalPages;
 
