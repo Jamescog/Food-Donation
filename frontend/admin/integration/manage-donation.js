@@ -1,4 +1,19 @@
 $(document).ready(() => {
+  $.ajax({
+    url: "http://localhost:4550/api/admin/thisaccount",
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    success: (response) => {
+      const admin = response.user.dataValues;
+      $("#account-name").text(`  ${admin.username.toUpperCase()}`);
+    },
+    error: (err) => {
+      console.log(err);
+    },
+  });
+
   const token = localStorage.getItem("token");
   let donors = [];
   let collectors = [];
@@ -61,7 +76,6 @@ $(document).ready(() => {
       collectors.length === 0 ||
       distributors.length === 0
     ) {
-      // Wait until all data is fetched
       return;
     }
 
@@ -111,42 +125,37 @@ $(document).ready(() => {
               </form>
             </td>`;
 
-      const statusColumn =
-        donor.state === "Pending"
-          ? `<td class="text-primary fw-semibold small">Pending</td>`
-          : `<td>${donor.state}</td>`;
-
       const doneButton =
         donor.state === "Pending"
-          ? `<button class="btn btn-primary">Mark it as Done</button>`
+          ? `<button class="btn btn-primary" id="done-${index}">Mark it as Done</button>`
           : `<button class="btn btn-primary" disabled>Not Needed</button>`;
 
       const row = `
           <tr>
-            <th scope="row">${index + 1}</th>
-            <td>${donor.request_id}</td>
-            <td>${donor.prepared_datetime}</td>
-            <td>${donor.pickup_time}</td>
-            <td>${donor.contact_number}</td>
-            ${collectorColumn}
-            ${distributorColumn}
-            ${statusColumn}
-            <td>${doneButton}</td>
+              <th scope="row">${index + 1}</th>
+              <td>${donor.request_id}</td>
+              <td>${donor.prepared_datetime.substring(11, 16)}</td>
+              <td>${donor.pickup_time}</td>
+              <td>${donor.contact_number}</td>
+              ${collectorColumn}
+              ${distributorColumn}
+              <td>${donor.state}</td>
+              <td>${doneButton}</td>
           </tr>
-        `;
+      `;
+
       tbody.append(row);
 
-      // Add event listener for collector select element
       $(`#collector-${index}`).on("change", function () {
         const collectorId = $(this).val();
         makeCollectorApiCall(donor.request_id, collectorId);
       });
+
       $(`#distributor-${index}`).on("change", function () {
         const distributorId = $(this).val();
         makeDistributorApiCall(donor.request_id, distributorId);
       });
 
-      // Add event listener for done button
       $(`#done-${index}`).on("click", function () {
         makeDoneApiCall(donor.request_id);
       });
@@ -154,17 +163,14 @@ $(document).ready(() => {
   };
 
   const makeCollectorApiCall = (requestId, collectorId) => {
-    // Make API call to assign collector
     $.ajax({
-      url: `http://localhost:4550/api/admin/assignDistributor?request_id=${requestId}&distributor_id=${collectorId}`,
+      url: `http://localhost:4550/api/admin/assignCollector?request_id=${requestId}&collector_id=${collectorId}`,
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
       success: (response) => {
-        // Handle success response
         console.log("Collector assigned successfully");
-        // refresh the page
         location.reload();
       },
       error: (error) => {
@@ -174,7 +180,6 @@ $(document).ready(() => {
   };
 
   const makeDistributorApiCall = (requestId, distributorId) => {
-    // Make API call to assign distributor
     $.ajax({
       url: `http://localhost:4550/api/admin/assignDistributor?request_id=${requestId}&distributor_id=${distributorId}`,
       method: "POST",
@@ -182,10 +187,7 @@ $(document).ready(() => {
         Authorization: `Bearer ${token}`,
       },
       success: (response) => {
-        // Handle success response
-        alert("changed");
         console.log("Distributor assigned successfully");
-        // refresh the page
         location.reload();
       },
       error: (error) => {
@@ -195,7 +197,6 @@ $(document).ready(() => {
   };
 
   const makeDoneApiCall = (requestId) => {
-    // Make API call to mark request as done
     $.ajax({
       url: `http://localhost:4550/api/admin/markRequestAsDone?request_id=${requestId}`,
       method: "POST",
@@ -203,9 +204,7 @@ $(document).ready(() => {
         Authorization: `Bearer ${token}`,
       },
       success: (response) => {
-        // Handle success response
         console.log("Request marked as done successfully");
-        // refresh the page
         location.reload();
       },
       error: (error) => {

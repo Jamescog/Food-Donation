@@ -15,6 +15,7 @@ const {
   getAllDonors,
   statGenerator,
   thisAccount,
+  loginAdminAccount,
 } = require("../controllers/admin");
 
 const {
@@ -43,7 +44,7 @@ router.post(
   createDistributorAccount
 );
 router.post("/createAdmin", passwordHasher, createAdminAccount);
-router.post("/updateAdmin:id", verifyToken, updateAdminAccount);
+router.post("/updateAdmin", verifyToken, updateAdminAccount);
 router.post("/blockDonor:id", verifyToken, blockDonorAccount);
 router.post("/fireCollector:id", verifyToken, destroyCollectorAccount);
 router.post("/fireDistributor:id", verifyToken, destroyDistributorAccount);
@@ -58,6 +59,7 @@ router.get("/stat", verifyToken, statGenerator);
 router.get("/thisaccount", verifyToken, thisAccount);
 router.post("/assignCollector", verifyToken, assignCollector);
 router.post("/assignDistributor", verifyToken, assignDistributor);
-router.post("/markAsDone", verifyToken, markAsDone);
+router.post("/markRequestAsDone", verifyToken, markAsDone);
+router.post("/login", loginAdminAccount);
 
 module.exports = router;

@@ -8,17 +8,14 @@ $(document).ready(() => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     success: (response) => {
-      console.log(response);
-
       const admin = response.user.dataValues;
       // change the value of p with id account-name to the admin's name(admin.username)
-      $("#account-name").text(admin.username);
+      $("#account-name").text(`  ${admin.username.toUpperCase()}`);
     },
     error: (err) => {
       console.log(err);
     },
   });
-
   // send an ajax request to /api/admin/stat
   $.ajax({
     url: "http://localhost:4550/api/admin/stat",

@@ -74,7 +74,7 @@ exports.updateDonationRequest = async (req, res) => {
   try {
     console.log(req.body);
     const { request_id } = req.params;
-    const { updates } = req.body;
+    const { contact_number, pickup_time, location } = req.body;
 
     const donationRequest = await DonationRequest.findOne({
       where: { request_id: request_id },
@@ -84,7 +84,11 @@ exports.updateDonationRequest = async (req, res) => {
       return res.status(400).json({ error: "Donation request does not exist" });
     }
 
-    const updatedDonationRequest = await donationRequest.update(req.body);
+    const updatedDonationRequest = await donationRequest.update({
+      contact_number,
+      pickup_time,
+      location,
+    });
 
     return res.status(200).json({
       message: "Donation request updated successfully",
@@ -175,6 +179,9 @@ exports.getDonationRequestsByDonor = async (req, res) => {
       offset,
       limit,
     });
+
+    // Reverse the order of donationRequests array
+    donationRequests.reverse();
 
     const hasNextPage = page < totalPages;
 

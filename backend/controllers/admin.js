@@ -3,6 +3,8 @@ const Collector = require("../models/collector");
 const Distributor = require("../models/distributor");
 const Admin = require("../models/admin");
 const DonationRequest = require("../models/donationRequest");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.createAdminAccount = async (req, res) => {
   const { username, password, email } = req.body;
@@ -22,6 +24,29 @@ exports.createAdminAccount = async (req, res) => {
   }
 };
 
+exports.loginAdminAccount = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const account = await Admin.findOne({ where: { email: email } });
+
+    if (!account) {
+      return res.status(400).json({ error: "Account does not exist" });
+    }
+
+    const validPassword = await bcrypt.compare(password, account.password);
+    if (!validPassword) {
+      return res.status(400).json({ error: "Invalid password" });
+    }
+
+    const token = jwt.sign({ email: email }, process.env.JWT_SECRET);
+    return res.status(200).json({ token: token, isAdmin: true });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: `Internal Server Error: ${error.message}` });
+  }
+};
+
 exports.thisAccount = async (req, res) => {
   try {
     const { password, ...userWithoutPassword } = req.user;
@@ -34,15 +59,18 @@ exports.thisAccount = async (req, res) => {
 };
 
 exports.updateAdminAccount = async (req, res) => {
-  const { admin_id } = req.params;
-  const { updateInfo } = req.body;
+  const { admin_id } = req.user;
+  const { contact_number } = req.body;
 
   try {
-    const admin = await Admin.update(updateInfo, {
-      where: {
-        admin_id,
-      },
-    });
+    const admin = await Admin.update(
+      { contact_number },
+      {
+        where: {
+          admin_id,
+        },
+      }
+    );
     res.status(200).json({ admin });
   } catch (error) {
     res.status(500).json({ error: "Failed to update admin account" });

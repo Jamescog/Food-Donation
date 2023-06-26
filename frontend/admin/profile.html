@@ -25,7 +25,7 @@
                 </a>
             </p>
 
-            <p class="bi bi-person-fill ms-2 small"> Jon Doe</p>
+            <p class="bi bi-person-fill ms-2 small" id="account-name"> Jon Doe</p>
 
             <div class="pt-2">
                 <p class="mb-4">
@@ -56,11 +56,11 @@
                     </li>
                 </ul>
 
-                <p class="mb-4">
+                <!-- <p class="mb-4">
                     <a href="/admin/manage.html" class="text-light"> <span
                             class="text-warning fs-5 bi bi-people me-1"></span>
                         Manage Accounts</a>
-                </p>
+                </p> -->
 
                 <p class="mb-4">
                     <a href="/admin/assign-donation.html" class="text-light"> <span
@@ -85,7 +85,7 @@
                 </p>
 
                 <p class="mb-4">
-                    <a href="/admin/logout" class="text-light"> <span class="text-warning fs-5 bi bi-power me-1"></span>
+                    <a href="#" class="text-light" id="logout"> <span class="text-warning fs-5 bi bi-power me-1"></span>
                         Logout
                     </a>
                 </p>
@@ -156,7 +156,7 @@
                     </a>
                 </p>
                 <p class="mb-4">
-                    <a href="/admin/logout" class="text-light" title="Logout"> <span
+                    <a href="#" class="text-light" title="Logout" id="logout"> <span
                             class="text-warning fs-5 bi bi-power me-1"></span>
                     </a>
                 </p>
@@ -188,7 +188,7 @@
                     </a>
                 </p>
 
-                <p class="ms-2 bi bi-person-fill small">Jon Doe</p>
+                <p class="ms-2 bi bi-person-fill small" id="account-name">Jon Doe</p>
 
                 <p class="my-4">
                     <a href="/admin/index.html" class="text-light"> <span
@@ -218,11 +218,11 @@
                     </li>
                 </ul>
 
-                <p class="mb-4">
+                <!-- <p class="mb-4">
                     <a href="/admin/manage.html" class="text-light"> <span
                             class="text-warning fs-5 bi bi-people me-1"></span>
                         Manage Accounts</a>
-                </p>
+                </p> -->
 
                 <p class="mb-4">
                     <a href="/admin/assign-donation.html" class="text-light"> <span
@@ -247,8 +247,8 @@
                 </p>
 
                 <p class="mb-4">
-                    <a href="/admin/logout" class="text-light">
-                        <span class="text-warning fs-5 bi bi-power me-1"></span>
+                    <a href="#" class="text-light">
+                        <span class="text-warning fs-5 bi bi-power me-1" id="logout"></span>
                         Logout
                     </a>
                 </p>
@@ -266,15 +266,15 @@
                     <div class="col-lg-4 col-12 mx-3 text-center">
                         <div class="shadow rounded p-3 bg small mb-5">
                             <p class="fs-1 bi bi-person-fill"></p>
-                            <p class="fw-semibold">Jon Doe</p>
-                            <li class="text-secondary">Admin</>
-                                <div class="mt-2 text-center">
-                                    <p class="bi bi-envelope-fill"> jondoe@gmail.com </p>
-                                    <p class="bi bi-flag-fill"> Ethiopia </p>
-                                    <p class="bi bi-building"> Addis Abeba </p>
-                                    <p class="bi bi-telephone-fill"> +25198765432 </p>
-                                </div>
-                        </div>
+                            <p class="fw-semibold" id="sub-username">Jon Doe</p>
+                            <li class="text-secondary">Admin</li>
+                            <div class="mt-2 text-center">
+                              <i class="bi bi-envelope-check-fill success" id="sub-email"></i>
+                              <p class="bi bi-flag-fill">Ethiopia</p>
+                              <p class="bi bi-building">Addis Abeba</p>
+                              <p class="bi bi-telephone-fill">+25198765432</p>
+                            </div>
+                          </div>
 
                         <!-- ------Alert Message--------- -->
                         <!-- Error Message -->
@@ -320,15 +320,14 @@
                     <!-- Profile Form -->
                     <div class="col-lg-7 col-12 shadow mx-3 bg p-5 mb-5 rounded">
                         <h4>Activity</h4>
-                        <p class="small mb-5 mt-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Et animi
-                            delectus, minus pariatur iure quos aliquid provident suscipit iste? Incidunt.
+                        <p class="small mb-5 mt-4">Admins at Nourishing Hope are responsible for overseeing and managing key organizational operations. 
                         </p>
 
                         <h5 class="mb-4">Setting</h5>
                         <p class="small fw-semibold mb-5">Make change on your profile
-                            <span>
+                            <!-- <span>
                                 <a href="#" id="changeLink" class="ms-5 text-primary">Also change Password?</a>
-                            </span>
+                            </span> -->
                         </p>
 
                         <form action="#">
@@ -384,6 +383,8 @@
 
 
         <script src="../js/admin.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="./integration/profile.js"></script>
 </body>
 
 </html>

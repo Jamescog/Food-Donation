@@ -25,12 +25,18 @@ $(document).ready(() => {
     },
   });
 
-  $("#logout").click(() => {
-    alert("You have been logged out.");
+  const successMessageHTML = `
+    <div id="success-message" class="hidden">
+        <p id="logout-success" class="alert alert-success text-center mt-5">You're logged out successfully</p>
+    </div>
+    `;
+  $("#logout").click((e) => {
+    e.preventDefault();
     localStorage.setItem("token", "");
+    $("#success-message").html(successMessageHTML);
+    $("#logout-success").removeClass("hidden"); // Add the success message HTML dynamically
     window.location.href = "login.html";
   });
-
   $(".btn-donate").click((event) => {
     event.preventDefault();
 

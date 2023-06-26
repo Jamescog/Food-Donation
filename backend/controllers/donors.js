@@ -45,13 +45,10 @@ exports.createDonorAccount = async (req, res) => {
 exports.loginDonorAccount = async (req, res) => {
   try {
     const { email, password } = req.body;
-    let account = await Donor.findOne({ where: { email: email } });
+    const account = await Donor.findOne({ where: { email: email } });
 
     if (!account) {
-      account = await Admin.findOne({ where: { email: email } });
-      if (!account) {
-        return res.status(400).json({ error: "Account does not exist" });
-      }
+      return res.status(400).json({ error: "Account does not exist" });
     }
 
     const validPassword = await bcrypt.compare(password, account.password);
@@ -60,9 +57,6 @@ exports.loginDonorAccount = async (req, res) => {
     }
 
     const token = jwt.sign({ email: email }, process.env.JWT_SECRET);
-    if (email.startsWith("admin")) {
-      return res.status(200).json({ token: token, isAdmin: true });
-    }
     return res.status(200).json({ token: token });
   } catch (error) {
     return res

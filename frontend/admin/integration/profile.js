@@ -11,7 +11,7 @@ $(document).ready(() => {
 
     // Send AJAX PUT request to update the donor's account
     $.ajax({
-      url: "http://localhost:4550/api/donor/update",
+      url: "http://localhost:4550/api/admin/updateAdmin",
       method: "PUT",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -66,10 +66,10 @@ $(document).ready(() => {
   });
 
   const successMessageHTML = `
-    <div id="success-message" class="hidden">
-        <p id="logout-success" class="alert alert-success text-center mt-5">You're logged out successfully</p>
-    </div>
-    `;
+      <div id="success-message" class="hidden">
+          <p id="logout-success" class="alert alert-success text-center mt-5">You're logged out successfully</p>
+      </div>
+      `;
   $("#logout").click((e) => {
     e.preventDefault();
     localStorage.setItem("token", "");
